@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/liquidacion.css}">
+</head>
+
+    <body>
+        <!-- Mejorado el navbar con gradiente y mejor espaciado -->
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container">
+                <a class="navbar-brand" href="#">
+                    <i class="bi bi-fuel-pump"></i> LIQUIDAR TURNO
+                </a>
+                <div class="ms-auto">
+                    <a th:href="@{/menuEmpleado}" class="btn btn-outline-light">
+                        <i class="bi bi-arrow-left"></i> Regresar
+                    </a>
+                </div>
+            </div>
+        </nav>
+        <div class="container my-4">
+        <form id="formLiquidacion"
+              th:action="@{/liquidar/guardar}"
+              th:object="${liquidacion}"
+              method="post">
+            <input type="hidden" name="tokenLiquidacion" th:value="${tokenLiquidacion}">
+        <!-- Mejorada la sección de datos de turno con mejor diseño -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3><i class="bi bi-clock-history"></i> Datos de Turno</h3>
+                        <div class="empleado-info">
+                            <p><strong>Empleado:</strong> <span th:text="${empleado.nombre}"></span></p>
+<!--                            <p><strong>Estación:</strong> <span th:text="${empleado.estacion.nombre}"></span></p>-->
+                            <p><strong>Estación:</strong>
+                                <span th:text="${empleado.estacion != null ? empleado.estacion.nombre : 'Sin estación asignada'}"></span>
+                            </p>
+
+
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+
+                        <label class="form-label"><i class="bi bi-clock"></i> Turno</label>
+
+                            <select id="turno" name="turno" class="form-select" required>
+                                <option value="">-- Selecciona --</option>
+                                <option th:each="t : ${turnos}"
+                                        th:value="${t.nombre}"
+                                        th:text="${t.nombre}">
+                                </option>
+
+                            </select>
+
+                        </div>
+
+                        <div class="col-12 col-md-4">
+
+                        <label class="form-label"><i class="bi bi-calendar3"></i> Fecha</label>
+                            <input type="date" id="fecha" name="fecha" class="form-control"
+                                   th:value="${fechaActual}">
+                        </div>
+
+                        <div class="col-12 col-md-4">
+
+                        <label class="form-label"><i class="bi bi-clock"></i> Hora</label>
+                            <input type="time" id="horaLocal" name="hora" class="form-control">
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3><i class="bi bi-geo-alt"></i> Selección de Isla</h3>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-12 col-md-6">
+
+                        <label class="form-label"><i class="bi bi-fuel-pump-diesel"></i> Isla</label>
+                            <select id="islaSelect" name="islaId" class="form-select" required>
+                                <option value="">-- Selecciona una isla --</option>
+                                <option th:each="isla : ${islas}" 
+                                        th:value="${isla.idIsla}" 
+                                        th:text="${isla.isla}">
+                                </option>
+                            </select>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label"><i class="bi bi-clipboard-check"></i> Estado</label>
+                            <input type="text" class="form-control" name="estado" value="Pendiente" readonly>
+                        </div>
+
+                    </div>
+
+                    <!-- Contenedor dinámico -->
+                    <div id="contenedorLecturas" class="row mt-4"></div>
+
+                    <!-- Template -->
+                    <template id="templatePosicion">
+                        <div class="col-12 col-md-6">
+                            <div class="lectura-card p-3 mb-3">
+                                <div class="row g-2 mb-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label"><i class="bi bi-hdd-stack"></i> Manguera</label>
+                                        <input type="text" class="posicion form-control" readonly>
+                                        <input type="hidden" class="posicion-id">
+
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label"><i class="bi bi-droplet"></i> Combustible</label>
+                                        <input type="text" class="combustible form-control" readonly>
+                                    </div>
+                                </div>
+
+                                <div class="row g-2 mb-3">
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Lectura Inicial</label>
+                                        <input type="number" class="lectura-inicial form-control" step="0.001">
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Lectura Final</label>
+                                        <input type="number" class="lectura-final form-control" step="0.001">
+                                    </div>
+                                </div>
+
+                                <div class="row g-2">
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Galones</label>
+                                        <input type="number" class="gls form-control" step="0.001" readonly>
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Precio Galón</label>
+                                        <input type="number" class="precio-galon form-control" step="0.001">
+                                    </div>
+                                    <div class="col-12 col-md-6">
+                                        <label class="form-label">Pesos</label>
+                                        <input type="text" class="pesos form-control" step="0" >
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <!-- Mejorada la sección de datos de venta con mejor organización -->
+                <div class="form-section">
+                    <div class="section-header">
+                        <h3><i class="bi bi-cash-stack"></i> Datos de Venta</h3>
+                    </div>
+                    <div class="row g-3">
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-calculator"></i> Venta Total</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                            <input type="text" class="form-control formatear-moneda" id="venta_total" th:field="*{venta.venta_total}" inputmode="numeric" autocomplete="off" placeholder="0" required />
+<!--                                <input type="text" class="form-control formatear-moneda" id="venta_total" inputmode="numeric" pattern="[0-9]*">-->
+
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-truck"></i> Entregas</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="entregas" th:field="*{venta.entregas}" inputmode="numeric" autocomplete="off" placeholder="0" />
+<!--                                <input type="text" class="form-control formatear-moneda" id="entregas" inputmode="numeric" pattern="[0-9]*">-->
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-credit-card-2-front"></i> Créditos Satelites</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="credito_satelite" th:field="*{venta.credito_satelite}" inputmode="numeric" autocomplete="off" placeholder="0" />
+<!--                                <input type="text" class="form-control formatear-moneda" id="credito_satelite" inputmode="numeric" pattern="[0-9]*">-->
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-credit-card-2-front"></i> Créditos Local</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="credito_local" th:field="*{venta.credito_local}" inputmode="numeric" autocomplete="off" placeholder="0" />
+<!--                                <input type="text" class="form-control formatear-moneda" id="credito_local" inputmode="numeric" pattern="[0-9]*">-->
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-credit-card-fill"></i> Prepagos Local</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="prepago_local" th:field="*{venta.prepago_local}" inputmode="numeric" autocomplete="off" placeholder="0" />
+<!--                                <input type="text" class="form-control formatear-moneda" id="prepago_local" inputmode="numeric" pattern="[0-9]*">-->
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-credit-card"></i> Pagos Electronicos</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="pagos_electronicos" th:field="*{venta.pagos_electronicos}" inputmode="numeric" autocomplete="off" placeholder="0" />
+<!--                                <input type="text" class="form-control formatear-moneda" id="pagos_electronicos" inputmode="numeric" pattern="[0-9]*">-->
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-qr-code"></i> Pagos QR</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+<!--                                <input type="text" class="form-control formatear-moneda" id="pagos_Qr" th:field="*{venta.pagos_Qr}" step="0.01" />-->
+                                <input type="text" class="form-control formatear-moneda" id="pagos_Qr" th:field="*{venta.pagos_Qr}" inputmode="numeric" autocomplete="off" placeholder="0">
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-coin"></i> Monedas</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="monedas" th:field="*{venta.monedas}" inputmode="numeric" autocomplete="off" placeholder="0" />
+<!--                                <input type="text" class="form-control formatear-moneda" id="" inputmode="numeric" pattern="[0-9]*">-->
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-receipt"></i> Gastos</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="gastos" th:field="*{venta.gastos}" inputmode="numeric" autocomplete="off" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-star"></i> Puntos Terpel</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="puntos_terpel" th:field="*{venta.puntos_terpel}" inputmode="numeric" autocomplete="off" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-arrow-return-left"></i> Devoluciones</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="devoluciones" th:field="*{venta.devoluciones}" inputmode="numeric" autocomplete="off" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-three-dots"></i> Otros</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="otros" th:field="*{venta.otros}" inputmode="numeric" autocomplete="off" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-cash"></i> Cheques</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="cheques" th:field="*{venta.cheques}"inputmode="numeric" autocomplete="off" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-gift"></i> Regalo</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="regalos" th:field="*{venta.regalos}" inputmode="numeric" autocomplete="off" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-exclamation-triangle text-warning"></i> Descuadre</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="descuadres" th:field="*{venta.descuadres}" inputmode="numeric" autocomplete="off" placeholder="0" readonly />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-4">
+                            <label class="form-label"><i class="bi bi-cash"></i> Prestamos</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="prestamos" th:field="*{venta.prestamos}" inputmode="numeric" autocomplete="off" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label"><i class="bi bi-cash"></i> Efectivo Final</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="efectivo_final" th:field="*{venta.efectivo_final}" inputmode="numeric" autocomplete="off" placeholder="0" />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label"><i class="bi bi-calculator"></i> Total</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="total" th:field="*{venta.total}" inputmode="numeric" autocomplete="off" placeholder="0" required />
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <label class="form-label"><i class="bi bi-calculator-fill text-info"></i> Diferencia</label>
+                            <div class="input-group">
+                                <span class="input-group-text">$</span>
+                                <input type="text" class="form-control formatear-moneda" id="diferencia" th:field="*{venta.diferencia}" inputmode="numeric" autocomplete="off" placeholder="0" readonly />
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label"><i class="bi bi-chat-text"></i> Observaciones</label>
+                            <textarea class="form-control" th:field="*{venta.observaciones}" rows="4" placeholder="Ingresa cualquier observación adicional..."></textarea>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Mejorados los botones de acción -->
+            <div class="text-center mt-4">
+                <button type="submit"
+                        id="btnGuardar"
+                        class="btn btn-success btn-lg shadow w-100 w-md-auto">
+                    <i class="bi bi-check-circle"></i> Guardar Liquidación
+                </button>
+            </div>
+
+                <div th:if="${param.turnoId}" class="text-center mt-3">
+                    <a th:href="@{'/liquidar/reporte?turnoId=' + ${param.turnoId}}"
+                       class="btn btn-outline-primary">
+                        <i class="bi bi-file-earmark-pdf"></i> Descargar PDF del turno
+                    </a>
+                </div>
+                </form>
+           </div>
+        </div>
+        <script src="/js/liquidacion.js"></script>
+    </body>
+
+</html>

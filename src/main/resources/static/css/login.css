@@ -1,0 +1,110 @@
+        /* CONTENEDOR PRINCIPAL */
+        .login-wrapper {
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* LADO DE LA IMAGEN */
+        .login-left {
+            flex: 1;
+            background-image: url('/img/estaciones.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        /* CAPA OSCURA */
+        .login-left::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.45);
+        }
+
+        /* LADO DEL LOGIN */
+        .login-right {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+            background: #f8f9fa;
+        }
+
+        /* CARD LOGIN */
+        .login-card {
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            animation: fadeIn 0.6s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(30px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* TITULO */
+        .login-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            color: #198754;
+            margin-bottom: 1rem;
+        }
+
+        .login-icon {
+            font-size: 3.5rem;
+            color: #198754;
+            display: block;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .btn-login {
+            background: linear-gradient(135deg,#198754,#20c997);
+            border: none;
+            padding: 12px;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.1rem;
+            width: 100%;
+            font-weight: 600;
+        }
+
+        .btn-login:hover {
+            opacity: .9;
+        }
+
+        /* Responsive: en celular se apila */
+        @media (max-width: 991px) {
+            .login-wrapper {
+                flex-direction: column;
+            }
+            .login-left {
+                height: 35vh;
+            }
+            .login-right {
+                height: 65vh;
+            }
+        }
+        .btn-eye {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    z-index: 10;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: #6c757d;
+}
+.btn-eye:hover {
+    color: #000;
+}

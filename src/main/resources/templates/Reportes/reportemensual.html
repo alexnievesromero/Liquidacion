@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <!-- Responsive -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <!-- CSRF -->
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+    <title>Reporte de Ventas</title>
+
+    <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}" />
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet"/>
+
+    <!-- Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css"
+          rel="stylesheet"/>
+
+    <!-- CSS -->
+    <link rel="stylesheet" th:href="@{/css/reportesTurnos.css}">
+</head>
+
+<body class="p-4 bg-light">
+
+<!-- 🔹 HEADER -->
+<div class="main-header mb-4">
+    <div class="container text-center">
+        <h2>📊 Reporte de ventas mensual</h2>
+    </div>
+
+    <div class="container mt-3">
+        <a th:href="@{/menuAdmin}" class="btn-back">
+            <i class="bi bi-arrow-left me-2"></i>
+            <span>Regresar</span>
+        </a>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- 🔍 FILTRO -->
+    <div class="filter-card mb-4">
+        <h5 class="section-title">🔍 Filtrar por mes</h5>
+
+        <form method="get" action="/Reportes/reportemensual">
+            <div class="row">
+                <div class="col-md-4">
+                    <input type="month" name="fecha" class="form-control"
+                           th:value="${fecha}">
+                </div>
+
+                <div class="col-md-2">
+                    <button class="btn btn-primary">Filtrar</button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <!-- 📤 EXPORTAR -->
+    <div class="export-section mb-4">
+        <h5 class="section-title">📤 Exportar</h5>
+
+        <form method="get" action="/Reportes/excelMensual">
+            <input type="hidden" name="fecha" th:value="${fecha}">
+            <button class="btn btn-success">
+                📊 Exportar a Excel
+            </button>
+        </form>
+    </div>
+
+    <!-- 📋 TABLA -->
+    <div class="table-container mb-4">
+        <div class="table-responsive">
+
+            <table class="table table-bordered align-middle text-center mb-0">
+
+                <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Empleado</th>
+                    <th>Estación</th>
+                    <th>Isla</th>
+                    <th>N° Turno</th>
+                    <th>Turno</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="r : ${datos}">
+                    <td th:text="${r.idVentas}"></td>
+
+                    <td th:text="${r.turno.empleado.nombre}" class="fw-semibold"></td>
+
+                    <td th:text="${r.estacion.nombre}"></td>
+
+                    <td th:text="${r.turno.isla.isla}" class="fw-bold text-primary"></td>
+
+                    <td>
+                        <span class="badge bg-secondary fs-6"
+                              th:text="${r.turno.numeroTurno}">
+                        </span>
+                    </td>
+
+                    <td th:text="${r.turno.turno}"></td>
+
+                    <td th:text="${r.turno.fecha}"></td>
+
+                    <td class="fw-bold text-success"
+                        th:text="${r.total}">
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(datos)}">
+                    <td colspan="8">No hay datos</td>
+                </tr>
+
+                </tbody>
+            </table>
+
+            <!-- 🔹 PAGINACIÓN -->
+            <nav th:if="${totalPaginas > 1}">
+                <ul class="pagination justify-content-center mt-3">
+
+                    <!-- ANTERIOR -->
+                    <li class="page-item"
+                        th:classappend="${paginaActual == 0} ? 'disabled'">
+
+                        <a class="page-link"
+                           th:href="@{/Reportes/reportemensual(page=${paginaActual - 1}, fecha=${fecha})}">
+                            ⬅ Anterior
+                        </a>
+                    </li>
+
+                    <!-- NÚMEROS -->
+                    <li class="page-item"
+                        th:each="i : ${#numbers.sequence(0, totalPaginas - 1)}"
+                        th:classappend="${i == paginaActual} ? 'active'">
+
+                        <a class="page-link"
+                           th:href="@{/Reportes/reportemensual(page=${i}, fecha=${fecha})}"
+                           th:text="${i + 1}">
+                        </a>
+                    </li>
+
+                    <!-- SIGUIENTE -->
+                    <li class="page-item"
+                        th:classappend="${paginaActual == totalPaginas - 1} ? 'disabled'">
+
+                        <a class="page-link"
+                           th:href="@{/Reportes/reportemensual(page=${paginaActual + 1}, fecha=${fecha})}">
+                            Siguiente ➡
+                        </a>
+                    </li>
+
+                </ul>
+            </nav>
+
+        </div>
+    </div>
+
+    <!-- 💰 TOTAL -->
+    <div class="text-end mt-3">
+        <h4>Total del mes:
+            <span class="text-success fw-bold"
+                  th:text="${total}">
+            </span>
+        </h4>
+    </div>
+
+</div>
+
+<!-- JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>

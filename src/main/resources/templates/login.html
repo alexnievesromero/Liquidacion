@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar Sesión - GESNNOVA</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}" />
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+
+    <link rel="stylesheet" th:href="@{/css/login.css}">
+</head>
+
+<body>
+
+<div class="login-wrapper">
+
+    <!-- IZQUIERDA -->
+    <div class="login-left"></div>
+
+    <!-- DERECHA (LOGIN) -->
+    <div class="login-right">
+        <div class="login-card">
+
+            <div class="login-icon">
+                <i class="bi bi-fuel-pump"></i>
+            </div>
+
+            <h2 class="login-title">GESNNOVA</h2>
+            <p class="text-center text-muted mb-4">Sistema de Liquidaciones</p>
+
+            <!-- ⏰ SESIÓN EXPIRADA -->
+            <div class="alert alert-warning text-center"
+                 th:if="${param.expired}">
+                ⏰ Tu sesión expiró por inactividad. Por favor inicia sesión nuevamente.
+            </div>
+
+            <!-- MENSAJES DE ERROR PERSONALIZADOS Y DE SPRING SECURITY -->
+            <div class="alert alert-danger text-center"
+                 th:if="${param.msg != null or param.error != null}">
+
+                <div th:switch="${param.msg != null ? param.msg[0] : 'springError'}">
+                    <!-- ❗ Mensaje cuando Spring Security falla por credenciales -->
+                    <div th:case="'springError'">
+                        ❌ Usuario o contraseña incorrectos.
+                    </div>
+                    <div th:case="'empleadoNoEncontrado'">
+                        ❌ El usuario no está registrado en el sistema.
+                    </div>
+                    <div th:case="'noperteneceempresa'">
+                        ❌ El usuario no tiene una estación asignada.
+                    </div>
+                    <div th:case="'rolDesconocido'">
+                        ❌ Rol no autorizado. Comuníquese con el administrador.
+                    </div>
+                    <div th:case="'errorInterno'">
+                        ❌ Error interno. Intente nuevamente.
+                    </div>
+                    <!-- DEFAULT -->
+                    <div th:case="*">
+                        ❌ Credenciales incorrectas.
+                    </div>
+                </div>
+            </div>
+            <form th:action="@{/login-process}" th:object="${loginDto}" method="post">
+
+                <input type="hidden" id="fecha" name="fecha"/>
+                <input type="hidden" id="horaInicio" name="horaInicio"/>
+
+                <div class="form-floating mb-3">
+                    <input type="text" th:field="*{username}" class="form-control" placeholder="Usuario" required>
+                    <label>Usuario</label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="passwordField" type="password" th:field="*{password}"
+                           class="form-control" placeholder="Contraseña" required>
+
+                    <!-- Botón ojito -->
+                    <button type="button" class="btn-eye" id="togglePassword">
+                        <i class="bi bi-eye-slash" id="eyeIcon"></i>
+                    </button>
+                </div>
+
+                <button type="submit" class="btn-login">Ingresar</button>
+            </form>
+
+            <div class="text-center mt-3">
+                <small class="text-muted">Conexión segura SSL</small>
+            </div>
+            <div style="text-align:center; font-size:12px; margin-top:20px;">
+                Versión del sistema:
+                <span th:text="${@version.version}"></span>
+            </div>
+            <div style="text-align:center; font-size:12px;">
+                Build:
+                <span th:text="${@version.buildTime}"></span>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Bootstrap Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/login.js"></script>
+
+</body>
+</html>
+

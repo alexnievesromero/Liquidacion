@@ -1,0 +1,97 @@
+:root {
+    --primary-gradient: linear-gradient(135deg, #10b981, #059669);
+    --success-gradient: linear-gradient(135deg, #10b981, #34d399);
+    --danger-gradient: linear-gradient(135deg, #ef4444, #dc2626);
+    --info-gradient: linear-gradient(135deg, #0dcaf0, #0aa2c0);
+    --card-shadow: 0 10px 30px rgba(16, 185, 129, 0.1);
+}
+
+/* BASE */
+body {
+    font-family: 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+}
+
+/* HEADER */
+.main-header {
+    background: var(--primary-gradient);
+    color: white;
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+    border-radius: 0 0 20px 20px;
+    box-shadow: var(--card-shadow);
+}
+
+.main-header h2 {
+    font-weight: 700;
+}
+
+/* BOTÓN VOLVER */
+.btn-back {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background: white;
+    border-radius: 30px;
+    padding: 0.6rem 1.2rem;
+    text-decoration: none;
+    color: #333;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    z-index: 1000;
+}
+
+/* CARDS */
+.filter-card,
+.export-section,
+.table-container {
+    background: white;
+    border-radius: 15px;
+    padding: 1.5rem;
+    box-shadow: var(--card-shadow);
+    margin-bottom: 2rem;
+}
+
+/* BOTONES */
+.btn-gradient {
+    border: none;
+    color: white;
+    font-weight: 600;
+    padding: 0.6rem 1.3rem;
+    border-radius: 10px;
+}
+
+.btn-success-gradient { background: var(--success-gradient); }
+.btn-danger-gradient  { background: var(--danger-gradient); }
+.btn-info-gradient    { background: var(--info-gradient); }
+
+/* TABLA */
+.table thead th {
+    background: var(--primary-gradient);
+    color: white;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.table tbody td {
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+/* RESPONSIVE */
+@media (max-width: 768px) {
+
+    .main-header h2 {
+        font-size: 1.6rem;
+    }
+
+    .btn-back {
+        top: 10px;
+        left: 10px;
+        padding: 0.4rem 0.8rem;
+    }
+
+    .table tbody td {
+        font-size: 0.85rem;
+    }
+}

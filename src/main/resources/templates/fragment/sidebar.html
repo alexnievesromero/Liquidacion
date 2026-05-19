@@ -1,0 +1,38 @@
+<!-- templates/fragments/sidebar.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Sidebar</title>
+</head>
+<body>
+
+<div th:fragment="sidebar">
+    <div class="bg-success text-white" id="sidebar-wrapper" style="width: 250px; min-height: 100vh;">
+        <div class="sidebar-heading py-3 text-center fw-bold fs-5">
+            Menú Principal
+        </div>
+        <div class="list-group list-group-flush">
+            <a th:href="@{/islas}" class="list-group-item list-group-item-action bg-success text-white">
+                <i class="bi bi-fuel-pump me-2"></i> Islas
+            </a>
+            <a th:href="@{/posiciones}" class="list-group-item list-group-item-action bg-success text-white">
+                <i class="bi bi-geo-alt me-2"></i> Posiciones
+            </a>
+
+            <a th:href="@{/estaciones}" class="list-group-item list-group-item-action bg-success text-white">
+                <i class="bi bi-building me-2"></i> Estaciones
+            </a>
+            <!-- Agrega más enlaces si los necesitas -->
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="btn btn-danger logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Cerrar Sesión
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

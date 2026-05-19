@@ -1,0 +1,135 @@
+<!-- templates/posiciones.html -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestionar Posiciones</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/gestionar_isla.css}">
+</head>
+<body class="d-flex">
+
+<!-- Sidebar -->
+<div th:replace="fragment/sidebar :: sidebar"></div>
+
+<!-- Contenido principal -->
+<div style="flex: 1;">
+    <div class="container-fluid mt-4">
+        <h3><i class="bi bi-geo-alt"></i> GESTIONAR POSICIONES</h3>
+
+        <div class="my-4">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">Formulario de Posición</div>
+                <div class="card-body">
+                    <form th:action="@{/posicion/guardar}" th:object="${posicion}" method="post" class="mb-4">
+                        <input type="hidden" th:field="*{idPosicion}"/>
+
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Nombre</label>
+                                <input type="text" th:field="*{nombrePosicion}" class="form-control"
+                                       placeholder="Ej: 1 - 2" required/>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Estación</label>
+                                <select th:field="*{estacion.idestacion}" class="form-select">
+                                    <option value="">Seleccione una estación</option>
+                                    <option th:each="est : ${estaciones}"
+                                            th:value="${est.idestacion}"
+                                            th:text="${est.nombre}">
+                                    </option>
+                                </select>
+                            </div>
+
+                            <div class="col-md-4">
+                                <label class="form-label">Isla</label>
+                                <select th:field="*{isla.idIsla}" class="form-select">
+                                    <option value="">Seleccione una isla</option>
+                                    <option th:each="i : ${islas}"
+                                            th:value="${i.idIsla}"
+                                            th:text="${i.isla}">
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="row g-3 mt-2">
+                            <div class="col-md-4">
+                                <label class="form-label">Combustible</label>
+                                <select th:field="*{combustible}" class="form-select">
+                                    <option value="CORRIENTE">CORRIENTE</option>
+                                    <option value="ACPM">ACPM</option>
+                                    <option value="EXTRA">EXTRA</option>
+                                    <option value="GNV">GNV</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success btn-lg shadow mt-3">
+                            <i class="bi bi-check-circle"></i> Guardar Posición
+                        </button>
+                    </form>
+                    <div class="row g-3">
+                        <div class="col-md-4 ms-auto">
+                            <div class="input-group">
+                                        <span class="input-group-text">
+                                           <i class="bi bi-search"></i>
+                                                 </span>
+                                <input type="text"
+                                       id="buscador"
+                                       class="form-control"
+                                       placeholder="Buscar por Estación">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Tabla de Posiciones -->
+                    <table class="table table-bordered align-middle text-center">
+                        <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Combustible</th>
+                            <th>Estación</th>
+                            <th>Isla</th>
+                            <th>Acciones</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="pos : ${posiciones}">
+                            <td th:text="${pos.nombrePosicion}"></td>
+                            <td th:text="${pos.combustible}"></td>
+                            <td th:text="${pos.estacion != null ? pos.estacion.nombre : 'Sin estación'}"></td>
+                            <td th:text="${pos.isla != null ? pos.isla.isla : 'Sin isla'}"></td>
+                            <td>
+                                <a th:href="@{'/posicion/editar/' + ${pos.idPosicion}}"
+                                   class="btn btn-warning btn-sm">Editar</a>
+                                <a th:href="@{'/posicion/eliminar/' + ${pos.idPosicion}}"
+                                   onclick="return confirm('¿Seguro que deseas eliminar esta posición?');"
+                                   class="btn btn-danger btn-sm">Eliminar</a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.getElementById("buscador").addEventListener("keyup", function () {
+        const filtro = this.value.toLowerCase();
+        const filas = document.querySelectorAll("table tbody tr");
+
+        filas.forEach(fila => {
+            fila.style.display = fila.innerText.toLowerCase().includes(filtro)
+                ? ""
+                : "none";
+        });
+    });
+</script>
+</body>
+</html>

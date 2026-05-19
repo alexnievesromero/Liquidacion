@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="_csrf" th:content="${_csrf.token}"/>
+    <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
+    <title>Revisión de Venta</title>
+    <link rel="icon" type="image/x-icon" th:href="@{/img/favicon.png}" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <!-- (puedes pegar aquí tus estilos tal cual los tienes) -->
+    <link rel="stylesheet" th:href="@{/css/revisar_venta.css}">
+</head>
+<body class="p-4 bg-light">
+<div class="container">
+    <div class="main-header mb-4">
+        <div class="container text-center">
+            <h2>🔎 Revisar Liquidación - <span th:text="${venta.idVentas}">#ID</span></h2>
+        </div>
+    </div>
+
+    <div class="mb-3">
+        <a th:href="@{/Reportes/reportesTurnos}" class="btn btn-outline-secondary">&larr; Volver a lista</a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-body">
+            <h5>Información</h5>
+            <p><strong>Empleado:</strong> <span th:text="${venta.turno.empleado.nombre}">Empleado</span></p>
+            <p><strong>Estación / Isla:</strong> <span th:text="${venta.turno.estacion.nombre}">Estación</span> /
+                <span th:text="${venta.turno.isla.isla}">Isla</span></p>
+            <p><strong>Turno:</strong> <span th:text="${venta.turno.turno}">Turno</span> -
+                <strong>Fecha:</strong> <span th:text="${venta.turno.fecha}">Fecha</span></p>
+        </div>
+    </div>
+
+    <!-- FORMULARIO DE EDICIÓN -->
+    <form th:action="@{/liquidar/ventas/{id}/editar(id=${venta.idVentas})}"
+          th:object="${venta}"
+          method="post" class="card p-4">
+        <!-- CSRF -->
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+        <div class="row g-3">
+            <!-- Cada campo editable: empaquetado en grid -->
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Venta total</label>
+                <input type="text" th:field="*{venta_total}"
+                       class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Entregas</label>
+                <input type="text" th:field="*{entregas}"
+                       data-field="entregas" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Crédito satélite</label>
+                <input type="text" th:field="*{credito_satelite}"
+                       data-field="credito_satelite" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Crédito local</label>
+                <input type="text" th:field="*{credito_local}"
+                       data-field="credito_local" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Prepago local</label>
+                <input type="text" th:field="*{prepago_local}"
+                       data-field="prepago_local" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Pagos electrónicos</label>
+                <input type="text" th:field="*{pagos_electronicos}"
+                       data-field="pagos_electronicos" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Pagos QR</label>
+                <input type="text" th:field="*{pagos_Qr}"
+                       data-field="pagos_Qr" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Monedas</label>
+                <input type="text" th:field="*{monedas}"
+                       data-field="monedas" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Gastos</label>
+                <input type="text" th:field="*{gastos}"
+                       data-field="gastos" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Puntos Terpel</label>
+                <input type="text" th:field="*{puntos_terpel}"
+                       data-field="puntos_terpel" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Devoluciones</label>
+                <input type="text" th:field="*{devoluciones}"
+                       data-field="devoluciones" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Otros</label>
+                <input type="text" th:field="*{otros}"
+                       data-field="otros" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Cheques</label>
+                <input type="text" th:field="*{cheques}"
+                       data-field="cheques" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Regalos</label>
+                <input type="text" th:field="*{regalos}"
+                       data-field="regalos" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Descuadre</label>
+                <input type="text" th:field="*{descuadres}"
+                       data-field="descuadres" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Préstamos</label>
+                <input type="text" th:field="*{prestamos}"
+                       data-field="prestamos" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Efectivo final</label>
+                <input type="text" th:field="*{efectivo_final}"
+                       data-field="efectivo_final" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Total</label>
+                <input type="text" th:field="*{total}"
+                       data-field="total" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-4">
+
+            <label class="form-label">Diferencia</label>
+                <input type="text" th:field="*{diferencia}"
+                       data-field="diferencia" class="form-control money" />
+<!--                       th:disabled="${venta.estado == 'aprobado'}" />-->
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Observaciones del vendedor (solo lectura)</label>
+                <textarea class="form-control" th:text="${venta.observaciones}" rows="2" readonly></textarea>
+            </div>
+
+            <div class="col-12">
+                <label class="form-label">Observación administrativa</label>
+                <textarea class="form-control" th:field="*{observacion_admin}" rows="3"></textarea>
+            </div>
+            <button type="submit"
+                    class="btn btn-success">
+<!--                    th:disabled="${venta.estado == 'aprobado'}">-->
+                💾 Guardar cambios
+            </button>
+
+        </div>
+    </form>
+
+    <div class="mt-4 d-flex flex-column flex-sm-row gap-2">
+
+    <!-- ✔ APROBAR -->
+            <form th:action="@{/liquidar/ventas/actualizarEstado}"
+                  method="post"
+                  class="d-inline">
+
+                <input type="hidden" name="ventaId" th:value="${venta.idVentas}" />
+                <input type="hidden" name="estado" value="aprobado" />
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+<!--                <button type="submit" class="btn btn-primary">✔️ Aprobar</button>-->
+                <button type="button"
+                        class="btn btn-primary"
+                        id="btnAprobar"
+                    th:disabled="${venta.estado == 'aprobado'}" >
+
+                    ✔️ Aprobar
+                </button>
+
+
+            </form>
+
+            <a th:href="@{/liquidar}" class="btn btn-secondary">Cancelar</a>
+        </div>
+
+
+    <!-- =========================================== -->
+    <!-- HISTORIAL DETALLADO DE CAMBIOS POR CAMPO    -->
+    <!-- =========================================== -->
+
+    <div class="card mt-4 shadow-sm">
+        <div class="card-header bg-success text-white">
+            <h5 class="mb-0">
+                <i class="bi bi-clock-history me-2"></i>
+                Historial de cambios por campo
+            </h5>
+        </div>
+
+        <div class="card-body p-3">
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered table-hover">
+
+                <thead class="table-success">
+                <tr>
+                    <th>Fecha</th>
+                    <th>Usuario</th>
+                    <th>Campo modificado</th>
+                    <th>Antes</th>
+                    <th>Después</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <!-- FILAS DEL HISTORIAL -->
+                <tr th:each="c : ${historial}">
+                    <td th:text="${#temporals.format(c.fecha,'dd-MM-yyyy HH:mm')}"></td>
+
+                    <td th:text="${c.usuario}"></td>
+                    <td th:text="${c.campo}"></td>
+                    <td th:text="${c.valorAnterior != null ? c.valorAnterior : '-'}"></td>
+                    <td th:text="${c.valorNuevo != null ? c.valorNuevo : '-'}"></td>
+                </tr>
+
+                <!-- MENSAJE SI NO HAY REGISTROS -->
+                <tr th:if="${#lists.isEmpty(historial)}">
+                    <td colspan="5" class="text-center text-muted py-3">
+                        No hay cambios registrados todavía.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- MODAL DE CONFIRMACIÓN -->
+<div class="modal fade" id="resultadoModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title">Resultado</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="resultadoMensaje">
+                <!-- Aquí irá el texto -->
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="/js/revisar_venta.js"></script>
+
+</body>
+</html>
